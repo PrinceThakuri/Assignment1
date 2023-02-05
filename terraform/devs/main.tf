@@ -33,7 +33,7 @@ locals {
 
 # Retrieve global variables from the Terraform module
 module "globalvars" {
-  source = "../../modules/globalvars"
+  source = "../modules/globalvars"
 }
 
 # Reference subnet provisioned by 01-Networking 
