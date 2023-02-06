@@ -31,12 +31,12 @@ locals {
   name_prefix  = "${local.prefix}-${var.env}"
 }
 
-# Retrieve global variables from the Terraform module
+# Retrieve global variables 
 module "globalvars" {
   source = "../modules/globalvars"
 }
 
-# Reference subnet provisioned by 01-Networking 
+# Creating instance and subnet 
 resource "aws_instance" "my_amazon" {
   ami                         = data.aws_ami.latest_amazon_linux.id
   instance_type               = lookup(var.instance_type, var.env)
