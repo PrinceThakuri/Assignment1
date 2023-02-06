@@ -41,8 +41,9 @@ resource "aws_instance" "my_amazon" {
   ami                         = data.aws_ami.latest_amazon_linux.id
   instance_type               = lookup(var.instance_type, var.env)
   key_name                    = aws_key_pair.my_key.key_name
-  vpc_security_group_ids             = [aws_security_group.my_sg.id]
+  vpc_security_group_ids      = [aws_security_group.my_sg.id]
   associate_public_ip_address = false
+  iam_instance_profile        = "LabRole"
 
   lifecycle {
     create_before_destroy = true
@@ -50,7 +51,7 @@ resource "aws_instance" "my_amazon" {
 
   tags = merge(local.default_tags,
     {
-      "Name" = "${local.name_prefix}-Amazon-Linux"
+      "Name" = "${local.name_prefix}-Linux"
     }
   )
 }
@@ -76,7 +77,34 @@ resource "aws_security_group" "my_sg" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
-
+  
+  ingress {
+    description      = "opening 8081 from everywhere"
+    from_port        = 8081
+    to_port          = 8081
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+  
+  ingress {
+    description      = "opening 8082 portfrom everywhere"
+    from_port        = 8082
+    to_port          = 8082
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+  
+  ingress {
+    description      = "opening 8083 from everywhere"
+    from_port        = 8083
+    to_port          = 8083
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+  
   egress {
     from_port        = 0
     to_port          = 0
@@ -84,6 +112,7 @@ resource "aws_security_group" "my_sg" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
+  
 
   tags = merge(local.default_tags,
     {
@@ -100,4 +129,12 @@ resource "aws_eip" "static_eip" {
       "Name" = "${local.name_prefix}-eip"
     }
   )
+}
+
+# ECR Repository
+resource  "aws_ecr_repository" "ecr" {
+  name = "assignment1"
+}
+resource  "aws_ecr_repository" "ecr2" {
+  name = "assignment1db"
 }
