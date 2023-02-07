@@ -56,13 +56,6 @@ resource "aws_instance" "my_amazon" {
   )
 }
 
-
-# Adding SSH key to Amazon EC2
-resource "aws_key_pair" "my_key" {
-  key_name   = local.name_prefix
-  public_key = file("${local.name_prefix}.pub")
-}
-
 # Security Group
 resource "aws_security_group" "my_sg" {
   name        = "allow_ssh"
@@ -84,7 +77,7 @@ resource "aws_security_group" "my_sg" {
     to_port          = 8081
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+
   }
   
   ingress {
@@ -93,7 +86,6 @@ resource "aws_security_group" "my_sg" {
     to_port          = 8082
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
   }
   
   ingress {
@@ -102,7 +94,6 @@ resource "aws_security_group" "my_sg" {
     to_port          = 8083
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
   }
   
   egress {
@@ -119,6 +110,12 @@ resource "aws_security_group" "my_sg" {
       "Name" = "${local.name_prefix}-sg"
     }
   )
+}
+
+# Adding SSH key 
+resource "aws_key_pair" "my_key" {
+  key_name   = local.name_prefix
+  public_key = file("${local.name_prefix}.pub")
 }
 
 # Elastic IP
